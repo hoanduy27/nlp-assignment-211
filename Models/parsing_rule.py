@@ -20,12 +20,12 @@ rightarcs = {
     ('ROOT','TRAIN-V'): Rule('ROOT', R),
     ('TRAIN-N', 'DET'): Rule('det-wh', R),
     ('ARRIVE-V', 'CITY-NAME'): Rule('dobj-a', R),
-    ('TRAIN-V', 'CITY-NAME'): Rule('pobj', R),
+    ('TRAIN-V', 'CITY-NAME'): Rule('obl', R),
     # Time
-    ('ARRIVE-V', 'TIME-MOD'): Rule('pobj', R),
-    ('TRAIN-V', 'TIME-MOD'): Rule('pobj', R),
-    ('ARRIVE-V', 'TIME-MOD-WH'): Rule('pobj', R),
-    ('TRAIN-V', 'TIME-MOD-WH'): Rule('pobj', R),
+    ('ARRIVE-V', 'TIME-MOD'): Rule('obl', R),
+    ('TRAIN-V', 'TIME-MOD'): Rule('obl', R),
+    ('ARRIVE-V', 'TIME-MOD-WH'): Rule('obl', R),
+    ('TRAIN-V', 'TIME-MOD-WH'): Rule('obl', R),
     # Train name
     ('TRAIN-N', 'TRAIN-NAME'): Rule('namemod', R),
     # Yes/No

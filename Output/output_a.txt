@@ -1,8 +1,0 @@
-Tàu hỏa (TRAIN-N)
-nào (DET)
-đến (ARRIVE-V)
-thành phố (CITY-N)
-Huế (CITY-NAME)
-lúc (AT)
-19:00HR (TIME-MOD)
-? (QUESTION)

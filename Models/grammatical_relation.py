@@ -65,12 +65,12 @@ class YN(Query):
         return self.__str__()
 
 class Procedure:
-    def __init__(self, name, arg):
+    def __init__(self, name, var):
         self.name = name
-        self.arg = arg
+        self.var = var
     
     def __str__(self):
-        return f'{self.name} {self.arg}' if self.arg is not None else self.name
+        return f'{self.name} {self.var}' if self.var is not None else self.name
 
     def __repr__(self) -> str:
         return self.__str__()
@@ -81,11 +81,11 @@ class GrammaticalRelation:
         self.relation_set = relation_set 
         self.pattern_set = []
         self.query_set = []
-        self.context = {'pred': None, 'FROM-LOC': None, 'TO-LOC': None}
+        self.context = {'pred': None, 'FROM-LOC': False,  'TO-LOC': False}
         self.procedure_var = {
             'TRAIN': '?t',
-            'D-CITY': '?cd',
-            'A-CITY': '?ca',
+            'D-CITY': '?dc',
+            'A-CITY': '?ac',
             'DTIME': '?dt',
             'ATIME': '?at',
             'RUN-TIME': '?rt',
@@ -217,14 +217,40 @@ class GrammaticalRelation:
         return self.query_set + self.pattern_set
 
     def get_logical_form(self):
-        ret = '&'
-        for pattern in self.pattern_set:
-            ret += f'({str(pattern)})'
-        ret = reduce(lambda x, y: f'({str(y)}: {str(x)})', self.query_set[::-1], ret)
-        return ret
+        queries = ' '.join([str(x) for x in self.query_set])
+        attrib = ' '.join([f'({str(pattern)})' for pattern in self.pattern_set])
+        return f'({queries}: {attrib})'
+
+class Database:
+    def __init__(self, raw_db):
+        self.trains = []
+        self.atimes = []
+        self.dtimes = []
+        self.runtimes = []
+        for ele in raw_db:
+            row = ' '.join(ele.replace('(', '').replace(')', '').split())
+            if 'TRAIN' in row:
+                self.trains.append(row)
+            elif 'ATIME' in row:
+                self.atimes.append(row)
+            elif 'DTIME' in row:
+                self.dtimes.append(row)
+            elif 'RUN-TIME' in row:
+                self.runtimes.append(row)       
+
+    def __str__(self):
+        return '\n'.join(self.trains + self.atimes + self.dtimes + self.runtimes)
+
+class Retriever:
+    def __init__(self, procedure_var, query_set, context):
+        self.procedure_var = procedure_var
+        self.query_set = query_set
+        
+        self.procedure_set = []
+        self.context = context
+
 
     def get_procedure(self):
-        procedure_set = []
         train = self.procedure_var['TRAIN']
         dcity = self.procedure_var['D-CITY']
         acity = self.procedure_var['A-CITY']
@@ -234,31 +260,78 @@ class GrammaticalRelation:
         for q in self.query_set:
             if isinstance(q, Wh_Query):
                 if(q.typ == 'Train'):
-                    procedure_set.append(
+                    self.procedure_set.append(
                         Procedure('PRINT-ALL', train)
                     )
                 elif(q.typ == 'DTime'):
-                    procedure_set.append(
-                        Procedure('FIND-THE', dtime) 
+                    self.procedure_set.append(
+                        Procedure('PRINT-ALL', dtime) 
                     )
                 elif(q.typ == 'ATime'):
-                    procedure_set.append(
-                        Procedure('FIND-THE', atime), 
+                    self.procedure_set.append(
+                        Procedure('PRINT-ALL', atime), 
                     )
                 elif(q.typ == 'Runtime'):
-                    procedure_set.append(
-                        Procedure('FIND-THE', rtime), 
+                    self.procedure_set.append(
+                        Procedure('PRINT-ALL', rtime), 
                     )
             else:
-                procedure_set.append(Procedure('TEST', None))
+                self.procedure_set.append(Procedure('CHECK-ALL-TRUE', None))
 
         train_param = f'(TRAIN {train})'
         atime_param = f'(ATIME {train} {acity} {atime})'
         dtime_param = f'(DTIME {train} {dcity} {dtime})'
         rtime_param = f'(RUN-TIME {train} {dcity} {acity} {rtime})'
         
-        ret = f'{train_param} {dtime_param} {atime_param} {rtime_param}'
+        params  = f'{train_param} {dtime_param} {atime_param} {rtime_param}'
 
-        ret = reduce(lambda x, y: f'({str(y)} {str(x)})', procedure_set[::-1], ret)
+        ret = '\n'.join(f'({str(procedure)} {params})' for procedure in self.procedure_set)
 
         return ret
+
+    def retrieve(self, procedure, database):
+        
+        if self.context['FROM-LOC'] and self.context['TO-LOC']:
+            related_var = ['TRAIN', 'D-CITY', 'A-CITY', 'RUN-TIME']
+            table = database.runtimes
+        elif self.context['FROM-LOC']:
+            related_var = ['TRAIN', 'D-CITY', 'DTIME']
+            table = database.dtimes
+        else:
+            related_var = ['TRAIN', 'A-CITY', 'ATIME']
+            table = database.atimes
+
+        related_var = {k: self.procedure_var[k] for k in related_var if k in related_var}
+        
+        def matches(row):
+            for k, v in related_var.items():
+                if '?' not in v and v not in row:
+                    return False
+            return True
+
+        rows = [row for row in table if matches(row)]
+
+        if procedure.name == 'PRINT-ALL':
+            if procedure.var == self.procedure_var['TRAIN']:
+                idx = 1
+            elif procedure.var in [self.procedure_var['ATIME'], self.procedure_var['DTIME']]:
+                idx = 3
+            elif procedure.var in [self.procedure_var['RUN-TIME'], self.procedure_var['DTIME']]:
+                idx = 4
+            else:
+                raise Exception('Not Implemented')
+
+            if(len(rows) > 0):
+                return ' '.join([row.split()[idx] for row in rows])
+            else:
+                return 'Không tìm thấy thông tin tàu hỏa'
+        else:
+            if(len(rows) > 0):
+                return 'Có'
+            else:
+                return 'Không'
+    def retrieve_all(self, database):
+        ret = []
+        for procedure in self.procedure_set:
+            ret.append(self.retrieve(procedure, database))
+        return '\n'.join(ret)
