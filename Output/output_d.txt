@@ -1,0 +1,1 @@
+(Wh-Runtime r1: ("CHẠY" v1) (AGENT v1 (TRAIN-NAME t1 "B3")) (FROM-LOC v1 (CITY-NAME c1 "ĐÀ NẴNG")) (TO-LOC v1 (CITY-NAME c2 "HỒ CHÍ MINH")) (RUN-IN v1 r1))

@@ -1,4 +1,4 @@
-from .dep_parse import Rule   
+from .nlp_parser import Rule   
 
 L = 'Left'
 R = 'Right'

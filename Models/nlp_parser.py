@@ -1,4 +1,4 @@
-from .tokenization import Token
+from .nlp_utils import Token, Printout
 class Rule:
     def __init__(self, name, typ):
         self.typ = typ #Left, Right, Shift, Reduce
@@ -29,6 +29,8 @@ class DependencyParsing:
         self.buffer = token_list
         self.relation_set = []
         self.verbose = verbose
+        self.printout = Printout([], self.verbose)
+
 
     def __str__(self) -> str:
         return f'Stack: {self.stack}\nBuffer: {self.buffer}\nRelation: {self.relation_set}\n'
@@ -39,9 +41,9 @@ class DependencyParsing:
         assert len(self.buffer) >= 0
         self.relation_set.append(Relation(rule, self.buffer[0], self.stack[-1]))
         self.stack.pop()
-        if self.verbose==1:
-            print(f'LeftArc: {rule}\n---')
-            print(str(self))
+        
+        self.printout.print(f'LeftArc: {rule}\n---')
+        self.printout.print(str(self))
 
     def _shift(self):
         assert len(self.stack) >= 1
@@ -52,22 +54,22 @@ class DependencyParsing:
     def rightarc(self, rule):
         self._shift()
         self.relation_set.append(Relation(rule, self.stack[-2], self.stack[-1]))
-        if self.verbose==1:
-            print(f'RightArc: {rule}\n---')
-            print(str(self))
+        
+        self.printout.print(f'RightArc: {rule}\n---')
+        self.printout.print(str(self))
 
     def shift(self):
         self._shift()
-        if self.verbose==1:
-            print(f'Shift\n---')
-            print(str(self))
+        
+        self.printout.print(f'Shift\n---')
+        self.printout.print(str(self))
 
     def rduce(self):
         assert len(self.stack) > 1
         self.stack.pop()
-        if self.verbose==1:
-            print(f'Reduce\n---')
-            print(str(self))
+        
+        self.printout.print(f'Reduce\n---')
+        self.printout.print(str(self))
 
     def current_pair(self):
         return self.stack[-1].pos, self.buffer[0].pos
@@ -85,4 +87,4 @@ class DependencyParsing:
                     self.rduce()
             else:
                 self.shift()
-        return self.relation_set
+        return self.relation_set, self.printout

@@ -1,12 +1,12 @@
 import os
-import nltk
-
 import argparse
-from Input import db
-from Models.tokenization import tokenize
+
+from Models.nlp_utils import Printout, tokenize, Database
 from Models.parsing_rule import leftarcs, rightarcs
-from Models.dep_parse import DependencyParsing
-from Models.grammatical_relation import GrammaticalRelation, Retriever, Database
+
+from Models.nlp_parser import DependencyParsing
+from Models.nlp_grammar import GrammaticalRelation
+from Models.nlp_retriever import Retriever
 
 def write_output(name, content):
     with open(os.path.join(os.path.dirname(__file__), f'Output/output_{name}.txt'), 'w') as f:
@@ -16,75 +16,94 @@ def main(args):
     """
     Main entry point for the program
     """
-    question_file = os.path.join(os.path.dirname(__file__), args.question_path)
-    grammar_path = os.path.join(os.path.dirname(__file__), args.grammar_path)
     verbose = args.verbose
+    printout = Printout([], verbose)
+    try:
+        question_path = os.path.join(os.path.dirname(__file__), args.question_path)
+        question = open(question_path, 'r').read()
+        
+        printout.print(f'>>> Query: {question}\n')
+    except:
+        question = args.question_text
+        
+        printout.print(f'>>> Query: {question}\n')
 
-    question = open(question_file, 'r').read()
-    print(question)
+    grammar_path = os.path.join(os.path.dirname(__file__), args.grammar_path)
+    database = Database(
+        os.path.join(os.path.dirname(__file__), args.database_path)
+    )
+    
+    
     question = question.replace(',', '')
     
-    database = Database(db.raw_db)
-    # print(database)
-    
-    print("-------------Tokenization---------------------")
+    printout.print(f'>>> DATABASE:\n{str(database)}\n')
+    printout.print('>>> Trace:')
+    printout.print("-------------Tokenization---------------------")
     buffer = tokenize(grammar_path, question)
-    write_output('a', '\n'.join([str(b) for b in buffer]))
-    print(buffer)
+    # write_output('a', '\n'.join([str(b) for b in buffer]))
     
-    print("-------------Dependency Parsing---------------------")
-    dep = DependencyParsing(leftarcs, rightarcs ,buffer, verbose)
-    relation_set = dep.parse()
+    printout.print([b.word for b in buffer])
+    printout.print("-------------Dependency Parsing---------------------")
+
+    dep = DependencyParsing(leftarcs, rightarcs ,buffer, verbose-1)
+    relation_set, logs = dep.parse()
 
     relation_set_str = '\n'.join([str(r) for r in relation_set])
     write_output('b', relation_set_str)
-    print(relation_set_str)
 
-    print("-------------Grammatical Relation---------------------")
+    if verbose > 1:
+        printout.print(str(logs) )
+
+    printout.print(relation_set_str)
+    printout.print("-------------Grammatical Relation---------------------")
+
     grammar_relation_gen = GrammaticalRelation(relation_set)
     grammar_relation_gen.generate()
     grammar_relation = grammar_relation_gen.get_grammatical_relation()
 
-    grammar_relation_str = '\n'.join([f'({str(r)})' for r in grammar_relation])
-    write_output('c', grammar_relation_str)
-    print(grammar_relation_str)
+    write_output('c', grammar_relation)
+    
+    printout.print(grammar_relation)
+    printout.print("-------------Logical form---------------------")
 
-    print("-------------Logical form---------------------")
     logical_form = grammar_relation_gen.get_logical_form()
     write_output('d', logical_form)
-    print(logical_form)
+    
+    printout.print(logical_form)
+    printout.print("-------------Procedure---------------------")
 
-    print("-------------Procedure---------------------")
-    procedure_var = grammar_relation_gen.procedure_var
     query_set = grammar_relation_gen.query_set
     context = grammar_relation_gen.context
 
-    retriever = Retriever(procedure_var, query_set, context)
+    retriever = Retriever(query_set, context)
 
     procedure = retriever.get_procedure()
     write_output('e', procedure)
-    print(procedure)
+    printout.print(procedure)
 
-    print("-------------Retrieval---------------------")
+    printout.print("-------------Retrieval---------------------")
     result = retriever.retrieve_all(database)
     write_output('f', result)
-    print(result)
+    printout.print(result)
 
+
+    print(printout)
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description='NLP Assignment 2021')
-    parser.add_argument(
+
+    question_group = parser.add_mutually_exclusive_group(required=True)
+    
+    question_group.add_argument(
         '--question-path', 
         type=str, 
-        default='Input/input_1.txt', 
-        help='Path to question file. Default: Input/input_1.txt'
+        help='Path to question file'
     )
 
-    # parser.add_argument(
-    #     '--question', 
-    #     type=str, 
-    #     default='Tàu hỏa nào đến thành phố Huế lúc 19:00HR ?', 
-    #     help='Question to be parsed. Default: Tàu hỏa nào đến thành phố Huế lúc 19:00HR ?'
-    # )
+    question_group.add_argument(
+        '--question-text',
+        type=str,
+        help='Question text'
+    )
 
     parser.add_argument(
         '--grammar-path',
@@ -94,12 +113,18 @@ if __name__=='__main__':
     )
 
     parser.add_argument(
+        '--database-path',
+        type=str,
+        default='Input/db.txt',
+        help='Path to database. Default: Input/db.txt'
+    )
+
+    parser.add_argument(
         '--verbose',
         type=int,
         default=0,
         help='Verbose mode. Default: 0'
     )
-
-    
+   
     args = parser.parse_args()
     main(args)
