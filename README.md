@@ -83,3 +83,5 @@ Kết quả thực thi ở yêu cầu {rq} được lưu trong Output/output_{rq
 
 ## Demo
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/125Abg7z6UmK21jNOAfVXM7fIwhAf4-04?usp=sharing)
+
+**Note**: Trong file colab, phần **Truy vấn trực tiếp**,  trong trường hợp `question_text`  bị lỗi hiển thị tiếng Việt khi mới mở lên (tuy nhiên vẫn thực thi và cho ra kết quả được), có thể chọn lại các mẫu câu hỏi có trong Dropdown hoặc gõ câu hỏi mới (theo các mẫu câu cho trước),
