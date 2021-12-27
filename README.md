@@ -1,5 +1,4 @@
-# nlp-assignment-211
-NLP Assignment\
+# Bài tập lớn Xử lý Ngôn ngữ Tự nhiên - HK211
 **Student Name**: Nguyễn Trần Hoàn Duy\
 **Student ID**: 1811731
 
@@ -38,19 +37,21 @@ ii) Thời gian tàu hỏa B3 chạy từ Đà Nẵng đến TP. Hồ Chi
 iii) Tàu hỏa nào đến thành phố Hồ Chí Minh ?\
 iv) Tàu hỏa nào chạy từ Nha Trang, lúc mấy giờ\
 v) Tàu hỏa nào chạy từ TP.Hồ Chí Minh đến Hà Nội ?\
-vi) Tàu hỏa B5 có chạy từ Đà Nẵng không ?\
+vi) Tàu hỏa B5 có chạy từ Đà Nẵng không ?
 
 ### Hiện thực
 a) Xây dựng bộ phân tích cú pháp của văn phạm phụ thuộc.\
 b) Phân tích cú pháp và xuất ra các quan hệ ngữ nghĩa của các câu truy vấn.\
-c) Từ kết quả ở b) tạo các quan hệ văn phạm cho về các chuyến tàu hỏa giữa thành phố Hồ Chí Minh, Huế, Đà Nẵng, Nha Trang và Hà Nội \với cơ sở dữ liệu đã cho ở trên.
+c) Từ kết quả ở b) tạo các quan hệ văn phạm cho về các chuyến tàu hỏa giữa thành phố Hồ Chí Minh, Huế, Đà Nẵng, Nha Trang và Hà Nội \với cơ sở dữ liệu đã cho ở trên.\
 d) Tạo dạng luận lý từ các quan hệ văn phạm ở c).\
 e) Tạo ngữ nghĩa thủ tục từ dạng luận lý ở d).\
 f) Truy xuất dữ liệu để tìm thông tin trả lời cho các câu truy vấn trên.
 
-## Yêu cầu chức năng
-- 
--  `nltk 3.6.5`, có thể cài đặt qua lệnh: `pip3 -r install Models/requirements.txt`
+### Môi trường 
+Python 3.7
+
+### Các gói cần cài đặt
+ `nltk 3.6.5`, có thể cài đặt qua lệnh: `pip3 -r install Models/requirements.txt`
 
 ## Chạy chương trình
 Chương trình nhận câu truy vấn bằng 2 cách:
