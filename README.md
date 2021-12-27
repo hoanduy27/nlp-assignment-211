@@ -48,31 +48,37 @@ d) Tạo dạng luận lý từ các quan hệ văn phạm ở c).\
 e) Tạo ngữ nghĩa thủ tục từ dạng luận lý ở d).\
 f) Truy xuất dữ liệu để tìm thông tin trả lời cho các câu truy vấn trên.
 
-## Cài đặt 
-- Cài gói `nltk`, có thể cài đặt qua lệnh: `pip3 -r install Models/requirements.txt`
+## Yêu cầu chức năng
+- 
+-  `nltk 3.6.5`, có thể cài đặt qua lệnh: `pip3 -r install Models/requirements.txt`
 
 ## Chạy chương trình
 Chương trình nhận câu truy vấn bằng 2 cách:
 - Từ file 
 ```sh
-$python3 main.py --question-path QUESTION_PATH [--grammar-path GRAMMAR_PATH] [--database-path DATABASE_PATH] [--verbose VERBOSE]
+$ python3 main.py --question-path QUESTION_PATH [--grammar-path GRAMMAR_PATH] [--database-path DATABASE_PATH] [--verbose VERBOSE]
 ```
 Ví dụ:
 ```sh
-$python3 main.py --question-path input/input_1.txt --grammar-path Models/grammar.cfg --database-path input/db.txt --verbose 1
+$ python3 main.py --question-path Input/input_1.txt --grammar-path Models/grammar.cfg --database-path Input/db.txt --verbose 1
 ```
 - Gõ trực tiếp 
 ```sh
-$python3 main.py --question-text QUESTION_TEXT [--grammar-path GRAMMAR_PATH] [--database-path DATABASE_PATH] [--verbose VERBOSE]
+$ python3 main.py --question-text QUESTION_TEXT [--grammar-path GRAMMAR_PATH] [--database-path DATABASE_PATH] [--verbose VERBOSE]
 ```
 Ví dụ:
-```sh
-$python3 main.py --question-path "Tàu hảo nào chạy từ thành phố Hồ Chí Minh ?" --grammar-path Models/grammar.cfg --database-path input/db.txt --verbose 1
+```sh	
+$ python3 main.py --question-text "Tàu hỏa nào chạy từ thành phố Hồ Chí Minh ?" --grammar-path Models/grammar.cfg --database-path Input/db.txt --verbose 1
 ```
 
 Trong đó:
 - `--question-path`: Đường dẫn tới file chứa câu truy vấn 
 - `--question-text`: Nội dung câu truy vấn 
-- `--grammar-path': Đường dẫn tới bộ phân tích để thực hiện tokenization 
-- `--database-path`: Đường dẫn tới file chứa cơ sở dữ liệu (dữ liệu thô)
-- `--verbose`: verbose mode (0: Không in, 1: In query, database, kết quả từng bước, 2: Như (1) + in quá trình thực hiện dependency parsing)
+- `--grammar-path`: Đường dẫn tới bộ phân tích để thực hiện tokenization (Default: Models/grammar.cfg)
+- `--database-path`: Đường dẫn tới file chứa cơ sở dữ liệu (dữ liệu thô) (Default: input/db.txt)
+- `--verbose`: verbose mode (0: Không in, 1: In query, database, kết quả từng bước, 2: Như (1) + in quá trình thực hiện dependency parsing) (Default: 0)
+
+Kết quả thực thi ở yêu cầu {rq} được lưu trong Output/output_{rq}.txt (rq: b, c, d, e, f).
+
+## Demo
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/125Abg7z6UmK21jNOAfVXM7fIwhAf4-04?usp=sharing)
