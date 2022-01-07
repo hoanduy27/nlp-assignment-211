@@ -30,7 +30,7 @@ class Database:
         self.dtimes = []
         self.runtimes = []
         # Read each line in raw_db
-        with open(raw_db_path, 'r') as f:
+        with open(raw_db_path, 'r', encoding='utf-8') as f:
             rows = f.readlines()
             for row in rows:
                 row = ' '.join(row.strip().replace('(', ' ').replace(')', ' ').split())

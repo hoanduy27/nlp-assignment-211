@@ -1,6 +1,0 @@
-(Wh-Runtime r1)
-(v1 PRED CHẠY)
-(v1 LSUBJ (TRAIN-NAME t1 "B3"))
-(v1 FROM-LOC (CITY-NAME c1 "ĐÀ NẴNG"))
-(v1 TO-LOC (CITY-NAME c2 "HỒ CHÍ MINH"))
-(v1 RUN-IN r1)

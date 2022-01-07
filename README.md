@@ -1,4 +1,7 @@
 # Bài tập lớn Xử lý Ngôn ngữ Tự nhiên - HK211
+
+`Press F for two-point-five :')`
+
 **Student Name**: Nguyễn Trần Hoàn Duy\
 **Student ID**: 1811731
 

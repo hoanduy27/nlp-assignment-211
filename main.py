@@ -9,7 +9,7 @@ from Models.nlp_grammar import GrammaticalRelation
 from Models.nlp_retriever import Retriever
 
 def write_output(name, content):
-    with open(os.path.join(os.path.dirname(__file__), f'Output/output_{name}.txt'), 'w') as f:
+    with open(os.path.join(os.path.dirname(__file__), f'Output/output_{name}.txt'), 'w', encoding='utf-8') as f:
         f.write(content)
 
 def main(args):
@@ -18,15 +18,18 @@ def main(args):
     """
     verbose = args.verbose
     printout = Printout([], verbose)
+    print(os.path.dirname(__file__))
+    print(args.question_path)
     try:
         question_path = os.path.join(os.path.dirname(__file__), args.question_path)
-        question = open(question_path, 'r').read()
+        question = open(question_path, 'r', encoding='utf-8').read()
         
         printout.print(f'>>> Query: {question}\n')
     except:
         question = args.question_text
         
         printout.print(f'>>> Query: {question}\n')
+    print(question)
 
     grammar_path = os.path.join(os.path.dirname(__file__), args.grammar_path)
     database = Database(
