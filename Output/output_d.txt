@@ -1,0 +1,1 @@
+(Wh-Train t1: ("ĐẾN" v1) (AGENT v1 t1) (TO-LOC v1 (CITY-NAME c2 "HUẾ")) (ARRIVE-AT v1 (TIMEMOD a1 "19:00HR")))

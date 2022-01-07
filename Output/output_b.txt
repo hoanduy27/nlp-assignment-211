@@ -1,0 +1,8 @@
+det-wh(Tàu hỏa, nào)
+nsubj(đến, Tàu hỏa)
+ROOT(ROOT, đến)
+nmod(Huế, thành phố)
+dobj-a(đến, Huế)
+case-t(19:00HR, lúc)
+obl(đến, 19:00HR)
+punct(đến, ?)

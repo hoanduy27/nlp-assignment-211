@@ -1,0 +1,5 @@
+(Wh-Train t1)
+(v1 PRED ĐẾN)
+(v1 LSUBJ t1)
+(v1 TO-LOC (CITY-NAME c2 "HUẾ"))
+(v1 ARRIVE-AT (TIMEMOD a1 "19:00HR"))
